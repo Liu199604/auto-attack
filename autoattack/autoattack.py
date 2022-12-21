@@ -133,6 +133,7 @@ class AutoAttack():
                     output = self.get_logits(x).max(dim=1)[1]
                     y_adv[start_idx: end_idx] = output
                     correct_batch = y.eq(output)
+                    print(correct_batch)
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
                 state.robust_flags = robust_flags
