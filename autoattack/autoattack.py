@@ -230,7 +230,7 @@ class AutoAttack():
                 
                     ######
                     k=1
-                    out = self.gte_logits(adv_curr)
+                    out = self.get_logits(adv_curr)
                     output = out.max(dim=1)[1]
                     _, pred = out.topk(k,1,True,True)
                     pred = pred.t()
