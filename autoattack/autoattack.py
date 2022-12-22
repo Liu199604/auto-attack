@@ -131,9 +131,10 @@ class AutoAttack():
                     x = x_orig[start_idx:end_idx, :].clone().to(self.device)
                     y = y_orig[start_idx:end_idx].clone().to(self.device)
                     output = self.get_logits(x).max(dim=1)[1]
+                    print('output',output)
                     y_adv[start_idx: end_idx] = output
                     correct_batch = y.eq(output)
-                    print(correct_batch)
+                    print('correct_batch',correct_batch)
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
                 state.robust_flags = robust_flags
@@ -221,6 +222,7 @@ class AutoAttack():
                 
                     output = self.get_logits(adv_curr).max(dim=1)[1]
                     false_batch = ~y.eq(output).to(robust_flags.device)
+                    print('false_batch',false_batch)
                     non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
                     robust_flags[non_robust_lin_idcs] = False
                     state.robust_flags = robust_flags
