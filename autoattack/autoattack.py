@@ -132,15 +132,21 @@ class AutoAttack():
                     y = y_orig[start_idx:end_idx].clone().to(self.device)
                     
                     ######
-                    k=3
+                    # k=3
+                    # out = self.get_logits(x)
+                    # output = out.max(dim=1)[1]
+                    # _, pred = out.topk(k,1,True,True)
+                    # pred = pred.t()
+                    # correct = pred.eq(y.view(1,-1).expand_as(pred))
+                    # correct_batch = correct[:k].max(0)[0].reshape(-1)
+                    # y_adv[start_idx: end_idx] = output
+                    ######
+                    
+                    ######
                     out = self.get_logits(x)
                     output = out.max(dim=1)[1]
-                    _, pred = out.topk(k,1,True,True)
-                    pred = pred.t()
-                    correct = pred.eq(y.view(1,-1).expand_as(pred))
-                    correct_batch = correct[:k].max(0)[0].reshape(-1)
-                    y_adv[start_idx: end_idx] = output
-                    # correct_batch = y.eq(output)                    
+                    pred = torch.where(out.softmax(dim=1)>=0.1, 1, 0)
+                    correct_batch = pred[range(out.shape[0]), y] == 1
                     ######
                     
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
@@ -230,14 +236,24 @@ class AutoAttack():
                 
                     ######
                     k=3
+                    # out = self.get_logits(adv_curr)
+                    # output = out.max(dim=1)[1]
+                    # _, pred = out.topk(k,1,True,True)
+                    # pred = pred.t()
+                    # correct = pred.eq(y.view(1,-1).expand_as(pred))
+                    # current_batch = correct[:k].max(0)[0].reshape(-1)
+                    # false_batch = ~current_batch.to(robust_flags.device)
+                    # non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
+                    # robust_flags[non_robust_lin_idcs] = False
+                    # state.robust_flags = robust_flags
+                    ######
+                    
+                    ######
                     out = self.get_logits(adv_curr)
                     output = out.max(dim=1)[1]
-                    _, pred = out.topk(k,1,True,True)
-                    pred = pred.t()
-                    correct = pred.eq(y.view(1,-1).expand_as(pred))
-                    current_batch = correct[:k].max(0)[0].reshape(-1)
+                    pred = torch.where(out.softmax(dim=1)>=0.1, 1, 0)
+                    current_batch = pred[range(out.shape[0]), y] == 1
                     false_batch = ~current_batch.to(robust_flags.device)
-                    # false_batch = ~y.eq(output).to(robust_flags.device)
                     non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
                     robust_flags[non_robust_lin_idcs] = False
                     state.robust_flags = robust_flags
