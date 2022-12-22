@@ -138,7 +138,7 @@ class AutoAttack():
                     _, pred = out.topk(k,1,True,True)
                     pred = pred.t()
                     correct = pred.eq(y.view(1,-1).expand_as(pred))
-                    correct_k = correct[:k].reshape(-1)
+                    correct_batch = correct[:k].reshape(-1)
                     print('output',output)
                     y_adv[start_idx: end_idx] = output
                     # correct_batch = y.eq(output)
