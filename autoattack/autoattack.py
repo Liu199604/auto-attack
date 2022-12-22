@@ -132,7 +132,7 @@ class AutoAttack():
                     y = y_orig[start_idx:end_idx].clone().to(self.device)
                     
                     ######
-                    k=2
+                    k=3
                     out = self.get_logits(x)
                     output = out.max(dim=1)[1]
                     _, pred = out.topk(k,1,True,True)
@@ -229,7 +229,7 @@ class AutoAttack():
                         raise ValueError('Attack not supported')
                 
                     ######
-                    k=2
+                    k=3
                     out = self.get_logits(adv_curr)
                     output = out.max(dim=1)[1]
                     _, pred = out.topk(k,1,True,True)
