@@ -130,11 +130,21 @@ class AutoAttack():
 
                     x = x_orig[start_idx:end_idx, :].clone().to(self.device)
                     y = y_orig[start_idx:end_idx].clone().to(self.device)
-                    output = self.get_logits(x).max(dim=1)[1]
+                    
+                    ######
+                    k=1
+                    out = self.get_logits(x)
+                    output = out.max(dim=1)[1]
+                    _, pred = out.topk(k,1,True,True)
+                    pred = pred.t()
+                    correct = pred.eq(y.view(1,-1).expand_as(pred))
+                    correct_k = correct[:k].reshape(-1)
                     print('output',output)
                     y_adv[start_idx: end_idx] = output
-                    correct_batch = y.eq(output)
+                    # correct_batch = y.eq(output)
                     print('correct_batch',correct_batch)
+                    
+                    
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
                 state.robust_flags = robust_flags
