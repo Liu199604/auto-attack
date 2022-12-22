@@ -235,7 +235,7 @@ class AutoAttack():
                     _, pred = out.topk(k,1,True,True)
                     pred = pred.t()
                     correct = pred.eq(y.view(1,-1).expand_as(pred))
-                    current_batch = correct[:k]..max(0)[0]reshape(-1)
+                    current_batch = correct[:k].max(0)[0].reshape(-1)
                     false_batch = ~current_batch.to(robust_flags.device)
                     # false_batch = ~y.eq(output).to(robust_flags.device)
                     non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
