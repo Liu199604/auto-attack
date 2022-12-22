@@ -139,11 +139,9 @@ class AutoAttack():
                     pred = pred.t()
                     correct = pred.eq(y.view(1,-1).expand_as(pred))
                     correct_batch = correct[:k].reshape(-1)
-                    print('output',output)
                     y_adv[start_idx: end_idx] = output
-                    # correct_batch = y.eq(output)
-                    print('correct_batch',correct_batch)
-                    
+                    # correct_batch = y.eq(output)                    
+                    ######
                     
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
@@ -230,12 +228,20 @@ class AutoAttack():
                     else:
                         raise ValueError('Attack not supported')
                 
-                    output = self.get_logits(adv_curr).max(dim=1)[1]
-                    false_batch = ~y.eq(output).to(robust_flags.device)
-                    print('false_batch',false_batch)
+                    ######
+                    k=1
+                    out = self.gte_logits(adv_curr)
+                    output = out.max(dim=1)[1]
+                    _, pred = out.topk(k,1,True,True)
+                    pred = pred.t()
+                    correct = pred.eq(y.view(1,-1).expand_as(pred))
+                    current_batch = correct[:k].reshape(-1)
+                    False_batch = ~current_batch
+                    # false_batch = ~y.eq(output).to(robust_flags.device)
                     non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
                     robust_flags[non_robust_lin_idcs] = False
                     state.robust_flags = robust_flags
+                    ######
 
                     x_adv[non_robust_lin_idcs] = adv_curr[false_batch].detach().to(x_adv.device)
                     y_adv[non_robust_lin_idcs] = output[false_batch].detach().to(x_adv.device)
