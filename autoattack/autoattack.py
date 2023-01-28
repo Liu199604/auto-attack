@@ -149,7 +149,7 @@ class AutoAttack():
                     ######
                     
                     ######
-                    total_clean_x_size = total_clean_x_size = x.shape[0]
+                    total_clean_x_size = total_clean_x_size + x.shape[0]
                     out = self.get_logits(x)
                     output = out.max(dim=1)[1]
                     pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
@@ -165,7 +165,7 @@ class AutoAttack():
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
                 ######
-                print('clean label size', total_clean_label_size*1.0/total_clean_x_size )
+                print('clean label size', total_clean_label_size*1.0/total_clean_x_size)
                 ######
                 
                 state.robust_flags = robust_flags
@@ -277,7 +277,6 @@ class AutoAttack():
                     
                     for i in range(out.shape[0]):
                         if pred[i].sum() == 0:
-                            print(pred[i])
                             pred[i][output[i]] = 1
                     
                     current_batch = pred[range(out.shape[0]), y] == 1
