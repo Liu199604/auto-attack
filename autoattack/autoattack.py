@@ -274,6 +274,7 @@ class AutoAttack():
                     
                     for i in range(out.shape[0]):
                         if pred[i].sum() == 0:
+                            print(pred[i])
                             pred[i][output[i]] = 1
                     
                     current_batch = pred[range(out.shape[0]), y] == 1
