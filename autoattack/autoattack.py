@@ -127,6 +127,7 @@ class AutoAttack():
                 
                 ######
                 total_clean_label_size = 0
+                total_clean_x_size = 0
                 ######
                 
                 for batch_idx in range(n_batches):
@@ -148,6 +149,7 @@ class AutoAttack():
                     ######
                     
                     ######
+                    total_clean_x_size = total_clean_x_size = x.shape[0]
                     out = self.get_logits(x)
                     output = out.max(dim=1)[1]
                     pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
@@ -163,7 +165,7 @@ class AutoAttack():
                     robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
                 ######
-                print('clean label size', total_clean_label_size)
+                print('clean label size', total_clean_label_size*1.0/total_clean_x_size )
                 ######
                 
                 state.robust_flags = robust_flags
@@ -198,8 +200,8 @@ class AutoAttack():
                 
                 ######
                 total_adv_label_size = 0
+                total_adv_x_size = 0
                 ######
-                
                 for batch_idx in range(n_batches):
                     start_idx = batch_idx * bs
                     end_idx = min((batch_idx + 1) * bs, num_robust)
@@ -268,6 +270,7 @@ class AutoAttack():
                     ######
                     
                     ######
+                    total_adv_x_size = total_adv_x_size + adv_curr.shape[0]
                     out = self.get_logits(adv_curr)
                     output = out.max(dim=1)[1]
                     pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
@@ -295,7 +298,7 @@ class AutoAttack():
                             attack, batch_idx + 1, n_batches, num_non_robust_batch, x.shape[0]))
                 
                 ######
-                print('adv label size', total_adv_label_size)
+                print('adv label size', total_adv_label_size*1.0/total_adv_x_size)
                 ######
                 
                 robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
