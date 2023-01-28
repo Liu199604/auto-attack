@@ -268,6 +268,7 @@ class AutoAttack():
                     pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
                     current_batch = pred[range(out.shape[0]), y] == 1
                     total_adv_label_size = total_adv_label_size + pred.sum()
+                    print(out[0], output[0], pred[0], current_batch)
                     false_batch = ~current_batch.to(robust_flags.device)
                     non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
                     robust_flags[non_robust_lin_idcs] = False
