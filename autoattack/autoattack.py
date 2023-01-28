@@ -150,7 +150,7 @@ class AutoAttack():
                     ######
                     out = self.get_logits(x)
                     output = out.max(dim=1)[1]
-                    pred = torch.where(out.softmax(dim=1)>=0.1, 1, 0)
+                    pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
                     correct_batch = pred[range(out.shape[0]), y] == 1
                     total_clean_label_size = total_clean_label_size + pred.sum()
                     ######
@@ -265,7 +265,7 @@ class AutoAttack():
                     ######
                     out = self.get_logits(adv_curr)
                     output = out.max(dim=1)[1]
-                    pred = torch.where(out.softmax(dim=1)>=0.1, 1, 0)
+                    pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
                     current_batch = pred[range(out.shape[0]), y] == 1
                     total_adv_label_size = total_adv_label_size + pred.sum()
                     false_batch = ~current_batch.to(robust_flags.device)
