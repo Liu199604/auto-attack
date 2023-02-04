@@ -152,7 +152,7 @@ class AutoAttack():
                     total_clean_x_size = total_clean_x_size + x.shape[0]
                     out = self.get_logits(x)
                     output = out.max(dim=1)[1]
-                    pred = torch.where(out.softmax(dim=1)>=0.4, 1, 0)
+                    pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
                     
                     for i in range(out.shape[0]):
                         if pred[i].sum() == 0:
@@ -273,7 +273,7 @@ class AutoAttack():
                     total_adv_x_size = total_adv_x_size + adv_curr.shape[0]
                     out = self.get_logits(adv_curr)
                     output = out.max(dim=1)[1]
-                    pred = torch.where(out.softmax(dim=1)>=0.4, 1, 0)
+                    pred = torch.where(out.softmax(dim=1)>=0.2, 1, 0)
                     
                     for i in range(out.shape[0]):
                         if pred[i].sum() == 0:
